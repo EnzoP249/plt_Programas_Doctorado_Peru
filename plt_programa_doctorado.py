@@ -238,7 +238,7 @@ tbl_pub_peru.rename(columns=({"count":"cantidad_pub"}), inplace=True)
 tbl_pub_peru.rename(columns=({"affil_name":"NOMBRE_ENTIDAD"}), inplace=True)
 
 # Ahora bien, se calcula la distribución de los egresados por universidad pública que oferta un programa de doctorado
-# cuya temática de investigación esta fuera del ambitó de las ciencias sociales
+# cuya temática de investigación esta fuera del ambito de las ciencias sociales
 tabla1 = pd.pivot_table(nosocial, values="egresado_docto", index="NOMBRE_ENTIDAD",aggfunc="sum")
 
 # Se construye una tabla que almacene información del número de egresados de programa de doctorado y publicaciones científicas
@@ -248,11 +248,45 @@ fusion = pd.merge(tabla1, tbl_pub_peru, on="NOMBRE_ENTIDAD", how="left")
 fusion.to_excel("tabla_egresados_publicaciones.xlsx")
 
 
+# Considerando el dataframe nosocial, se realiza un análisis entre los ingresantes y los egresados
+tabla2 = pd.pivot_table(nosocial, values=["ingresantes", "egresado_docto"], index="NOMBRE_ENTIDAD", aggfunc="sum") 
+tabla2.reset_index(inplace=True)
+tabla2.columns
+tabla2 = tabla2[["NOMBRE_ENTIDAD","ingresantes", "egresado_docto"]]
 
 
+# Ordenar por número de ingresantes (opcional pero recomendado)
+df_plot = tabla2.sort_values("ingresantes")
 
+# Crear figura
+plt.figure(figsize=(10, 6))
 
+# Dibujar líneas (la "bombilla")
+for i in range(len(df_plot)):
+    plt.plot(
+        [df_plot["egresado_docto"].iloc[i], df_plot["ingresantes"].iloc[i]],
+        [i, i]
+    )
 
+# Dibujar puntos
+plt.scatter(df_plot["egresado_docto"], range(len(df_plot)), s=80, label="Egresados")
+plt.scatter(df_plot["ingresantes"], range(len(df_plot)), s=200, label="Ingresantes")
+
+# Etiquetas del eje Y
+plt.yticks(range(len(df_plot)), df_plot["NOMBRE_ENTIDAD"])
+
+# Etiquetas y título
+plt.xlabel("Número de personas")
+#plt.title("Relación entre Ingresantes y Egresados en Programas de Doctorado")
+
+# Leyenda
+plt.legend()
+
+# Ajuste visual
+plt.grid(axis="x", linestyle="--", alpha=0.5)
+plt.tight_layout()
+
+plt.show()
 
 
 
