@@ -94,6 +94,7 @@ plt.show()
 # Ciencias Sociales
 
 nosocial = nolima[nolima["AREA_OECD"] != "5. Ciencias Sociales"]
+nosocial.columns
 
 matriz1 = nosocial.Departamento.value_counts()
 matriz1 = matriz1.to_frame()
@@ -255,6 +256,8 @@ tabla2.columns
 tabla2 = tabla2[["NOMBRE_ENTIDAD","ingresantes", "egresado_docto"]]
 
 
+# Se elabora un gráfico de bombillas para visualizar la relación entre egresados e ingresantes
+
 # Ordenar por número de ingresantes (opcional pero recomendado)
 df_plot = tabla2.sort_values("ingresantes")
 
@@ -288,8 +291,8 @@ plt.tight_layout()
 
 plt.show()
 
-
-
+# Considerando el dataframe nosocial, se elabora una distribución de doctorados para observar el más recurrente
+nosocial.NOMBRE_PROGRAMA.value_counts()
 
 
 
